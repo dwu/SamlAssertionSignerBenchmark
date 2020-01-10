@@ -14,7 +14,7 @@ public class Main {
 
     public void run() throws Exception {
         KeyStore keyStore = KeyUtil.getKeyStore(new File("keystore.jks"), "password");
-        BasicX509Credential privateKeyCredential = (BasicX509Credential) KeyUtil.getCredential(keyStore, "selfsigned", "password");
+        BasicX509Credential privateKeyCredential = (BasicX509Credential) KeyUtil.getCredential(keyStore, "test8192", "password");
 
         SamlBuilder samlBuilder = new SamlBuilder();
         Assertion assertion = samlBuilder.buildAssertion("my-id", new DateTime(), "idOne", "idTwo");

@@ -44,14 +44,15 @@ import java.io.File;
 import java.security.KeyStore;
 import java.util.concurrent.TimeUnit;
 
-@State(Scope.Thread)
 public class MyBenchmark {
 
     @State(Scope.Thread)
     public static class MyState {
 
         public KeyStore keyStore;
-        public BasicX509Credential privateKeyCredential;
+        public BasicX509Credential privateKeyCredential2048;
+        public BasicX509Credential privateKeyCredential4096;
+        public BasicX509Credential privateKeyCredential8192;
         public SamlBuilder samlBuilder;
 
         @Setup(Level.Trial)
@@ -59,7 +60,9 @@ public class MyBenchmark {
             try {
                 samlBuilder = new SamlBuilder();
                 keyStore = KeyUtil.getKeyStore(new File("keystore.jks"), "password");
-                privateKeyCredential = (BasicX509Credential) KeyUtil.getCredential(keyStore, "selfsigned", "password");
+                privateKeyCredential2048 = (BasicX509Credential) KeyUtil.getCredential(keyStore, "test2048", "password");
+                privateKeyCredential4096 = (BasicX509Credential) KeyUtil.getCredential(keyStore, "test4096", "password");
+                privateKeyCredential8192 = (BasicX509Credential) KeyUtil.getCredential(keyStore, "test8192", "password");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -72,10 +75,31 @@ public class MyBenchmark {
     @Warmup(iterations = 5)
     @Measurement(iterations = 5)
     @BenchmarkMode(Mode.AverageTime)
-    public void buildAndSignAssertion(MyState myState, Blackhole bh) {
+    public void buildAndSignAssertion2048(MyState myState, Blackhole bh) {
         Assertion assertion = myState.samlBuilder.buildAssertion("my-id", new DateTime(), "idOne", "idTwo");
-        SamlUtil.signAssertion(assertion, myState.privateKeyCredential);
+        SamlUtil.signAssertion(assertion, myState.privateKeyCredential2048);
         bh.consume(assertion);
     }
 
+    @Benchmark
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Warmup(iterations = 5)
+    @Measurement(iterations = 5)
+    @BenchmarkMode(Mode.AverageTime)
+    public void buildAndSignAssertion4096(MyState myState, Blackhole bh) {
+        Assertion assertion = myState.samlBuilder.buildAssertion("my-id", new DateTime(), "idOne", "idTwo");
+        SamlUtil.signAssertion(assertion, myState.privateKeyCredential4096);
+        bh.consume(assertion);
+    }
+
+    @Benchmark
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Warmup(iterations = 5)
+    @Measurement(iterations = 5)
+    @BenchmarkMode(Mode.AverageTime)
+    public void buildAndSignAssertion8192(MyState myState, Blackhole bh) {
+        Assertion assertion = myState.samlBuilder.buildAssertion("my-id", new DateTime(), "idOne", "idTwo");
+        SamlUtil.signAssertion(assertion, myState.privateKeyCredential8192);
+        bh.consume(assertion);
+    }
 }
