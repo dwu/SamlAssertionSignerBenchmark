@@ -105,10 +105,10 @@ public class SamlUtil {
         }
     }
 
-    public static void signAssertion(Assertion assertion, X509Credential cred) {
+    public static void signAssertion(Assertion assertion, X509Credential cred, String signatureAlgorithm) {
         Signature signature = buildSAMLObject(Signature.class);
         signature.setSigningCredential(cred);
-        signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1);
+        signature.setSignatureAlgorithm(signatureAlgorithm);
         signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
 
         assertion.setSignature(signature);

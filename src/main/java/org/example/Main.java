@@ -6,6 +6,7 @@ import org.example.samlutil.SamlUtil;
 import org.joda.time.DateTime;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.security.x509.BasicX509Credential;
+import org.opensaml.xmlsec.signature.support.SignatureConstants;
 
 import java.io.File;
 import java.security.KeyStore;
@@ -18,7 +19,7 @@ public class Main {
 
         SamlBuilder samlBuilder = new SamlBuilder();
         Assertion assertion = samlBuilder.buildAssertion("my-id", new DateTime(), "idOne", "idTwo");
-        SamlUtil.signAssertion(assertion, privateKeyCredential);
+        SamlUtil.signAssertion(assertion, privateKeyCredential, SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256);
         String strResponse = SamlUtil.stringifySAMLObject(assertion);
         System.out.println(strResponse);
     }
